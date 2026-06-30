@@ -1,6 +1,6 @@
 import type { EChartsOption } from "echarts";
 import { MessageSquareText, Percent, Star, TrendingUp, UsersRound } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ChartCard } from "../components/ChartCard";
 import { FilterBar } from "../components/FilterBar";
 import { MetricCard } from "../components/MetricCard";
@@ -122,28 +122,6 @@ function includesAny(text: string, terms: string[]) {
   return terms.some((term) => text.includes(term));
 }
 
-function CountUpNumber({ value }: { value: number | null }) {
-  const [displayValue, setDisplayValue] = useState(0);
-
-  useEffect(() => {
-    const target = value ?? 0;
-    const duration = 700;
-    const start = performance.now();
-    let frame = 0;
-
-    const tick = (now: number) => {
-      const progress = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplayValue(target * eased);
-      if (progress < 1) frame = requestAnimationFrame(tick);
-    };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [value]);
-
-  return <>{value === null ? "-" : displayValue.toFixed(1)}</>;
-}
 
 export function AvaliacaoPage({ evaluations, regions, darkMode }: AvaliacaoPageProps) {
   const [filters, setFilters] = useState(clearFilters);
