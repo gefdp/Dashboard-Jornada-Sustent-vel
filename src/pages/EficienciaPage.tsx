@@ -242,7 +242,7 @@ export function EficienciaPage({ schools, darkMode }: EficienciaPageProps) {
     <div className="page-stack">
       <div className="page-header">
         <PageTitle
-          title="Eficiência da Gestão"
+          title="Índice de Eficiência da Gestão – IEG"
           description="Cruzamento das escolas com o credenciamento pelo INEP para classificar presença, inscrição e lacunas por GRE."
         />
         <FilterBar

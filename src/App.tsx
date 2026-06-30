@@ -25,7 +25,7 @@ type LoadState =
 const pages = [
   { id: "credenciamento" as const, label: "Credenciamento", icon: ClipboardCheck },
   { id: "avaliacao" as const, label: "Avaliação", icon: Star },
-  { id: "eficiencia" as const, label: "Eficiência", icon: Gauge },
+  { id: "eficiencia" as const, label: "IEG", icon: Gauge },
 ];
 
 function App() {
