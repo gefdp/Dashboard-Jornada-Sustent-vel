@@ -49,9 +49,9 @@ function App() {
     async function loadData() {
       try {
         const [dataResponse, geoResponse, regionsResponse] = await Promise.all([
-          fetch("/data/jornada_sustentavel.json"),
-          fetch("/data/paraiba-municipios.geojson"),
-          fetch("/data/paraiba-regioes.json"),
+          fetch(`${import.meta.env.BASE_URL}data/jornada_sustentavel.json`),
+          fetch(`${import.meta.env.BASE_URL}data/paraiba-municipios.geojson`),
+          fetch(`${import.meta.env.BASE_URL}data/paraiba-regioes.json`),
         ]);
 
         if (!dataResponse.ok) throw new Error("Não foi possível carregar o JSON da jornada.");
