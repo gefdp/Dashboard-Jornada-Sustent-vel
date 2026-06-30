@@ -653,17 +653,6 @@ export function AvaliacaoPage({ evaluations, regions, darkMode }: AvaliacaoPageP
             </div>
           </header>
           <div className="fsl-chart">
-            <div className="fsl-header-row">
-              <div className="fsl-label-col" />
-              <div className="fsl-track-col">
-                <div className="fsl-scale">
-                  {[0, 2, 4, 6, 8, 10].map((v) => (
-                    <span key={v}>{v}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="fsl-score-col" />
-            </div>
             {functionScores.map((role) => (
               <div key={role.key} className={`fsl-row fsl-row--${role.key}`}>
                 <div className="fsl-label-col">
