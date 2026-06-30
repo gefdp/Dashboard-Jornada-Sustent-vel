@@ -1,6 +1,5 @@
 import type { EChartsOption } from "echarts";
-import { RefreshCw, MessageSquareText, Percent, Star, TrendingUp, UsersRound } from "lucide-react";
-import type { CSSProperties } from "react";
+import { MessageSquareText, Percent, Star, TrendingUp, UsersRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ChartCard } from "../components/ChartCard";
 import { FilterBar } from "../components/FilterBar";
@@ -149,7 +148,6 @@ function CountUpNumber({ value }: { value: number | null }) {
 export function AvaliacaoPage({ evaluations, regions, darkMode }: AvaliacaoPageProps) {
   const [filters, setFilters] = useState(clearFilters);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const [activeFunctionIndex, setActiveFunctionIndex] = useState(0);
   const [commentsView, setCommentsView] = useState<CommentsView>("positivos");
 
   const filtered = useMemo(() => {
@@ -350,10 +348,10 @@ export function AvaliacaoPage({ evaluations, regions, darkMode }: AvaliacaoPageP
   }, [filtered, darkMode]);
 
   const functionScores = useMemo(() => {
-    const roles: Array<{ key: FunctionRole; label: string }> = [
-      { key: "professor", label: "Média por professor(a)" },
-      { key: "coordenador", label: "Média por coordenador(a)" },
-      { key: "diretor", label: "Média por diretor(a)" },
+    const roles: Array<{ key: FunctionRole; label: string; shortLabel: string }> = [
+      { key: "diretor", label: "Média por diretor(a)", shortLabel: "Diretor(a)" },
+      { key: "coordenador", label: "Média por coordenador(a)", shortLabel: "Coordenador(a)" },
+      { key: "professor", label: "Média por professor(a)", shortLabel: "Professor(a)" },
     ];
 
     return roles.map((role) => {
@@ -365,8 +363,6 @@ export function AvaliacaoPage({ evaluations, regions, darkMode }: AvaliacaoPageP
       };
     });
   }, [filtered]);
-
-  const activeFunctionScore = functionScores[activeFunctionIndex % functionScores.length];
 
   const poloParticipationOption = useMemo<EChartsOption>(() => {
     const polos = uniqueOptions(filtered.map((item) => item.polo)).map((option) => option.value);
@@ -677,32 +673,44 @@ export function AvaliacaoPage({ evaluations, regions, darkMode }: AvaliacaoPageP
               <h3>Resultado por função</h3>
               <p>Média geral por perfil respondente</p>
             </div>
-            <button
-              className="function-score-switch"
-              type="button"
-              onClick={() => setActiveFunctionIndex((current) => (current + 1) % functionScores.length)}
-            >
-              <RefreshCw size={14} aria-hidden="true" />
-              Mudar
-            </button>
           </header>
-          <div className="function-score-grid">
-            <article
-              key={activeFunctionScore.key}
-              className={`function-score function-score--single function-score--${activeFunctionScore.key}`}
-              style={{ "--score": activeFunctionScore.score ?? 0 } as CSSProperties}
-            >
-              <div className="function-score__ring">
-                <strong>
-                  <CountUpNumber value={activeFunctionScore.score} />
-                </strong>
-                <small>/10</small>
+          <div className="fsl-chart">
+            <div className="fsl-header-row">
+              <div className="fsl-label-col" />
+              <div className="fsl-track-col">
+                <div className="fsl-scale">
+                  {[0, 2, 4, 6, 8, 10].map((v) => (
+                    <span key={v}>{v}</span>
+                  ))}
+                </div>
               </div>
-              <div className="function-score__meta">
-                <span>{activeFunctionScore.label}</span>
-                <small>{formatNumber(activeFunctionScore.count)} respostas</small>
+              <div className="fsl-score-col" />
+            </div>
+            {functionScores.map((role) => (
+              <div key={role.key} className={`fsl-row fsl-row--${role.key}`}>
+                <div className="fsl-label-col">
+                  <UsersRound size={18} className="fsl-icon" aria-hidden="true" />
+                  <div className="fsl-meta">
+                    <strong>{role.shortLabel}</strong>
+                    <small>{formatNumber(role.count)} respostas</small>
+                  </div>
+                </div>
+                <div className="fsl-track-col">
+                  {[2, 4, 6, 8].map((v) => (
+                    <div key={v} className="fsl-gridline" style={{ left: `${v * 10}%` }} />
+                  ))}
+                  <div className="fsl-track">
+                    <div className="fsl-bar" style={{ width: `${((role.score ?? 0) / 10) * 100}%` }}>
+                      <div className="fsl-dot" />
+                    </div>
+                  </div>
+                </div>
+                <div className="fsl-score-col">
+                  <strong>{role.score !== null ? role.score!.toFixed(1).replace(".", ",") : "–"}</strong>
+                  <small>/10</small>
+                </div>
               </div>
-            </article>
+            ))}
           </div>
         </section>
         <ChartCard
